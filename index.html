@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>DPHE FSTP Locations</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/FSTPLocation_1.js"></script>
+        <script src="data/Intrnational_boundary_2.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[21.216605052394936,86.96945434351865],[26.394274277708945,92.94610776277524]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleHybrid_0');
+        map.getPane('pane_GoogleHybrid_0').style.zIndex = 400;
+        var layer_GoogleHybrid_0 = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleHybrid_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_GoogleHybrid_0;
+        map.addLayer(layer_GoogleHybrid_0);
+        function pop_FSTPLocation_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">City Name</th>\
+                        <td>' + (feature.properties['City Name'] !== null ? autolinker.link(feature.properties['City Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Status</th>\
+                        <td>' + (feature.properties['Status'] !== null ? autolinker.link(feature.properties['Status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Project</th>\
+                        <td>' + (feature.properties['Project'] !== null ? autolinker.link(feature.properties['Project'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">District</th>\
+                        <td>' + (feature.properties['District'] !== null ? autolinker.link(feature.properties['District'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Situation</th>\
+                        <td>' + (feature.properties['Situation'] !== null ? autolinker.link(feature.properties['Situation'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? autolinker.link(feature.properties['Population'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Male </th>\
+                        <td>' + (feature.properties['Male '] !== null ? autolinker.link(feature.properties['Male '].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Female</th>\
+                        <td>' + (feature.properties['Female'] !== null ? autolinker.link(feature.properties['Female'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Gender Vulnerability</th>\
+                        <td>' + (feature.properties['Gender Vulnerability'] !== null ? autolinker.link(feature.properties['Gender Vulnerability'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Business Model</th>\
+                        <td>' + (feature.properties['Business Model'] !== null ? autolinker.link(feature.properties['Business Model'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Delta Plan Hotspot</th>\
+                        <td>' + (feature.properties['Delta Plan Hotspot'] !== null ? autolinker.link(feature.properties['Delta Plan Hotspot'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Flood Risk</th>\
+                        <td>' + (feature.properties['Flood Risk'] !== null ? autolinker.link(feature.properties['Flood Risk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Cyclone Risk</th>\
+                        <td>' + (feature.properties['Cyclone Risk'] !== null ? autolinker.link(feature.properties['Cyclone Risk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Salinity Risk</th>\
+                        <td>' + (feature.properties['Salinity Risk'] !== null ? autolinker.link(feature.properties['Salinity Risk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Flash Flood Risk</th>\
+                        <td>' + (feature.properties['Flash Flood Risk'] !== null ? autolinker.link(feature.properties['Flash Flood Risk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Erosion Risk</th>\
+                        <td>' + (feature.properties['Erosion Risk'] !== null ? autolinker.link(feature.properties['Erosion Risk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Landslide Risk</th>\
+                        <td>' + (feature.properties['Landslide Risk'] !== null ? autolinker.link(feature.properties['Landslide Risk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Earthquake Risk</th>\
+                        <td>' + (feature.properties['Earthquake Risk'] !== null ? autolinker.link(feature.properties['Earthquake Risk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Sea Level Rise Risk</th>\
+                        <td>' + (feature.properties['Sea Level Rise Risk'] !== null ? autolinker.link(feature.properties['Sea Level Rise Risk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_FSTPLocation_1_0(feature) {
+            switch(String(feature.properties['Status'])) {
+                case 'Construction completed':
+                    return {
+                pane: 'pane_FSTPLocation_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(92,231,71,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Construction ongoing':
+                    return {
+                pane: 'pane_FSTPLocation_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(72,87,220,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'FSTP in operation':
+                    return {
+                pane: 'pane_FSTPLocation_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,231,48,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Yet to start construction':
+                    return {
+                pane: 'pane_FSTPLocation_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,68,43,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_FSTPLocation_1');
+        map.getPane('pane_FSTPLocation_1').style.zIndex = 401;
+        map.getPane('pane_FSTPLocation_1').style['mix-blend-mode'] = 'normal';
+        var layer_FSTPLocation_1 = new L.geoJson(json_FSTPLocation_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_FSTPLocation_1',
+            layerName: 'layer_FSTPLocation_1',
+            pane: 'pane_FSTPLocation_1',
+            onEachFeature: pop_FSTPLocation_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_FSTPLocation_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_FSTPLocation_1);
+        map.addLayer(layer_FSTPLocation_1);
+        function pop_Intrnational_boundary_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LENGTH'] !== null ? autolinker.link(feature.properties['LENGTH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['BOUNDARY'] !== null ? autolinker.link(feature.properties['BOUNDARY'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(feature.properties['ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Intrnational_boundary_2_0() {
+            return {
+                pane: 'pane_Intrnational_boundary_2',
+                opacity: 1,
+                color: 'rgba(236,162,3,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Intrnational_boundary_2');
+        map.getPane('pane_Intrnational_boundary_2').style.zIndex = 402;
+        map.getPane('pane_Intrnational_boundary_2').style['mix-blend-mode'] = 'normal';
+        var layer_Intrnational_boundary_2 = new L.geoJson(json_Intrnational_boundary_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Intrnational_boundary_2',
+            layerName: 'layer_Intrnational_boundary_2',
+            pane: 'pane_Intrnational_boundary_2',
+            onEachFeature: pop_Intrnational_boundary_2,
+            style: style_Intrnational_boundary_2_0,
+        });
+        bounds_group.addLayer(layer_Intrnational_boundary_2);
+        map.addLayer(layer_Intrnational_boundary_2);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>DPHE FSTP Locations</h2>';
+            };
+            title.addTo(map);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Intrnational_boundary_2.png" /> Intrnational_boundary': layer_Intrnational_boundary_2,'FSTP Location<br /><table><tr><td style="text-align: center;"><img src="legend/FSTPLocation_1_Constructioncompleted0.png" /></td><td>Construction completed</td></tr><tr><td style="text-align: center;"><img src="legend/FSTPLocation_1_Constructionongoing1.png" /></td><td>Construction ongoing</td></tr><tr><td style="text-align: center;"><img src="legend/FSTPLocation_1_FSTPinoperation2.png" /></td><td>FSTP in operation</td></tr><tr><td style="text-align: center;"><img src="legend/FSTPLocation_1_Yettostartconstruction3.png" /></td><td>Yet to start construction</td></tr></table>': layer_FSTPLocation_1,"Google Hybrid": layer_GoogleHybrid_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_FSTPLocation_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Status'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"District": "str","Status": "str","Project": "str","Gender Vulnerability": "str","Business Model": "str","Delta Plan Hotspot": "str","Flood Risk": "str","Cyclone Risk": "str","Salinity Risk": "str","Flash Flood Risk": "str","Erosion Risk": "str","Landslide Risk": "str","Earthquake Risk": "str","Sea Level Rise Risk": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_District = document.createElement('div');
+            div_District.id = "div_District";
+            div_District.className= "filterselect";
+            document.getElementById("menu").appendChild(div_District);
+            sel_District = document.createElement('select');
+            sel_District.multiple = true;
+            sel_District.size = 10;
+            sel_District.id = "sel_District";
+            var District_options_str = "<option value='' unselected></option>";
+            sel_District.onchange = function(){filterFunc()};
+            District_options_str  += '<option value="Bagerhat">Bagerhat</option>';
+            District_options_str  += '<option value="Bandarban">Bandarban</option>';
+            District_options_str  += '<option value="Barguna">Barguna</option>';
+            District_options_str  += '<option value="Barisal">Barisal</option>';
+            District_options_str  += '<option value="Bogra">Bogra</option>';
+            District_options_str  += '<option value="Brahmanbaria">Brahmanbaria</option>';
+            District_options_str  += '<option value="Chapainawabganj">Chapainawabganj</option>';
+            District_options_str  += '<option value="Chattogram">Chattogram</option>';
+            District_options_str  += '<option value="Chittagong">Chittagong</option>';
+            District_options_str  += '<option value="Chuadanga">Chuadanga</option>';
+            District_options_str  += '<option value="Comilla">Comilla</option>';
+            District_options_str  += '<option value="Cox&apos;s Bazar">Cox&apos;s Bazar</option>';
+            District_options_str  += '<option value="Cumilla">Cumilla</option>';
+            District_options_str  += '<option value="Dhaka">Dhaka</option>';
+            District_options_str  += '<option value="Dinajpur">Dinajpur</option>';
+            District_options_str  += '<option value="Faridpur">Faridpur</option>';
+            District_options_str  += '<option value="Gaibandha">Gaibandha</option>';
+            District_options_str  += '<option value="Gazipur">Gazipur</option>';
+            District_options_str  += '<option value="Gopalganj">Gopalganj</option>';
+            District_options_str  += '<option value="Habiganj">Habiganj</option>';
+            District_options_str  += '<option value="Jamalpur">Jamalpur</option>';
+            District_options_str  += '<option value="Jashore">Jashore</option>';
+            District_options_str  += '<option value="Jessore">Jessore</option>';
+            District_options_str  += '<option value="Jhenaidah">Jhenaidah</option>';
+            District_options_str  += '<option value="Joypurhat">Joypurhat</option>';
+            District_options_str  += '<option value="Khagrachari">Khagrachari</option>';
+            District_options_str  += '<option value="Khulna">Khulna</option>';
+            District_options_str  += '<option value="Kurigram">Kurigram</option>';
+            District_options_str  += '<option value="Kushtia">Kushtia</option>';
+            District_options_str  += '<option value="Lakshmipur">Lakshmipur</option>';
+            District_options_str  += '<option value="Lalmonirhat">Lalmonirhat</option>';
+            District_options_str  += '<option value="Madaripur">Madaripur</option>';
+            District_options_str  += '<option value="Magura">Magura</option>';
+            District_options_str  += '<option value="Meherpur">Meherpur</option>';
+            District_options_str  += '<option value="Moulvibazar">Moulvibazar</option>';
+            District_options_str  += '<option value="Mymensing">Mymensing</option>';
+            District_options_str  += '<option value="Mymensingh">Mymensingh</option>';
+            District_options_str  += '<option value="Naogaon">Naogaon</option>';
+            District_options_str  += '<option value="Narayanganj">Narayanganj</option>';
+            District_options_str  += '<option value="Narsingdi">Narsingdi</option>';
+            District_options_str  += '<option value="Natore">Natore</option>';
+            District_options_str  += '<option value="Netrokona">Netrokona</option>';
+            District_options_str  += '<option value="Nilphamari">Nilphamari</option>';
+            District_options_str  += '<option value="Noakhali">Noakhali</option>';
+            District_options_str  += '<option value="Pabna">Pabna</option>';
+            District_options_str  += '<option value="Panchagarh">Panchagarh</option>';
+            District_options_str  += '<option value="Patuakhali">Patuakhali</option>';
+            District_options_str  += '<option value="Rajbari">Rajbari</option>';
+            District_options_str  += '<option value="Rajshahi">Rajshahi</option>';
+            District_options_str  += '<option value="Rangamati">Rangamati</option>';
+            District_options_str  += '<option value="Rangpur">Rangpur</option>';
+            District_options_str  += '<option value="Shariatpur">Shariatpur</option>';
+            District_options_str  += '<option value="Sirajganj">Sirajganj</option>';
+            District_options_str  += '<option value="Sunamganj">Sunamganj</option>';
+            District_options_str  += '<option value="Sylhet">Sylhet</option>';
+            District_options_str  += '<option value="Tangail">Tangail</option>';
+            sel_District.innerHTML = District_options_str;
+            div_District.appendChild(sel_District);
+            var lab_District = document.createElement('div');
+            lab_District.innerHTML = 'District';
+            lab_District.className = 'filterlabel';
+            div_District.appendChild(lab_District);
+            var reset_District = document.createElement('div');
+            reset_District.innerHTML = 'clear filter';
+            reset_District.className = 'filterlabel';
+            reset_District.onclick = function() {
+                var options = document.getElementById("sel_District").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_District.appendChild(reset_District);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Status = document.createElement('div');
+            div_Status.id = "div_Status";
+            div_Status.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Status);
+            sel_Status = document.createElement('select');
+            sel_Status.multiple = true;
+            sel_Status.size = 4;
+            sel_Status.id = "sel_Status";
+            var Status_options_str = "<option value='' unselected></option>";
+            sel_Status.onchange = function(){filterFunc()};
+            Status_options_str  += '<option value="Construction completed">Construction completed</option>';
+            Status_options_str  += '<option value="Construction ongoing">Construction ongoing</option>';
+            Status_options_str  += '<option value="FSTP in operation">FSTP in operation</option>';
+            Status_options_str  += '<option value="Yet to start construction">Yet to start construction</option>';
+            sel_Status.innerHTML = Status_options_str;
+            div_Status.appendChild(sel_Status);
+            var lab_Status = document.createElement('div');
+            lab_Status.innerHTML = 'Status';
+            lab_Status.className = 'filterlabel';
+            div_Status.appendChild(lab_Status);
+            var reset_Status = document.createElement('div');
+            reset_Status.innerHTML = 'clear filter';
+            reset_Status.className = 'filterlabel';
+            reset_Status.onclick = function() {
+                var options = document.getElementById("sel_Status").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Status.appendChild(reset_Status);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Project = document.createElement('div');
+            div_Project.id = "div_Project";
+            div_Project.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Project);
+            sel_Project = document.createElement('select');
+            sel_Project.multiple = true;
+            sel_Project.size = 10;
+            sel_Project.id = "sel_Project";
+            var Project_options_str = "<option value='' unselected></option>";
+            sel_Project.onchange = function(){filterFunc()};
+            Project_options_str  += '<option value="23 municipalities water supply and sanitation project,DPHE">23 municipalities water supply and sanitation project,DPHE</option>';
+            Project_options_str  += '<option value="32 municipalities water supply, faecal sludge management and envitonmental sanitation,DPHE">32 municipalities water supply, faecal sludge management and envitonmental sanitation,DPHE</option>';
+            Project_options_str  += '<option value="DPHE">DPHE</option>';
+            Project_options_str  += '<option value="ICRC">ICRC</option>';
+            Project_options_str  += '<option value="Lives and Livelihoods Fund (LLF),DPHE">Lives and Livelihoods Fund (LLF),DPHE</option>';
+            Project_options_str  += '<option value="Oxfam/NGOF">Oxfam/NGOF</option>';
+            Project_options_str  += '<option value="Practical Action">Practical Action</option>';
+            Project_options_str  += '<option value="SNV">SNV</option>';
+            Project_options_str  += '<option value="Shibchar municipality and upazila safe water supply and sanitation system extention and development project,DPHE">Shibchar municipality and upazila safe water supply and sanitation system extention and development project,DPHE</option>';
+            Project_options_str  += '<option value="UGIIP-lll">UGIIP-lll</option>';
+            Project_options_str  += '<option value="UGIIP-lll,DPHE">UGIIP-lll,DPHE</option>';
+            Project_options_str  += '<option value="WSUP">WSUP</option>';
+            Project_options_str  += '<option value="WaterAid">WaterAid</option>';
+            sel_Project.innerHTML = Project_options_str;
+            div_Project.appendChild(sel_Project);
+            var lab_Project = document.createElement('div');
+            lab_Project.innerHTML = 'Project';
+            lab_Project.className = 'filterlabel';
+            div_Project.appendChild(lab_Project);
+            var reset_Project = document.createElement('div');
+            reset_Project.innerHTML = 'clear filter';
+            reset_Project.className = 'filterlabel';
+            reset_Project.onclick = function() {
+                var options = document.getElementById("sel_Project").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Project.appendChild(reset_Project);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_GenderVulnerability = document.createElement('div');
+            div_GenderVulnerability.id = "div_GenderVulnerability";
+            div_GenderVulnerability.className= "filterselect";
+            document.getElementById("menu").appendChild(div_GenderVulnerability);
+            sel_GenderVulnerability = document.createElement('select');
+            sel_GenderVulnerability.multiple = true;
+            sel_GenderVulnerability.size = 6;
+            sel_GenderVulnerability.id = "sel_GenderVulnerability";
+            var GenderVulnerability_options_str = "<option value='' unselected></option>";
+            sel_GenderVulnerability.onchange = function(){filterFunc()};
+            GenderVulnerability_options_str  += '<option value="High">High</option>';
+            GenderVulnerability_options_str  += '<option value="HighGha">HighGha</option>';
+            GenderVulnerability_options_str  += '<option value="Low">Low</option>';
+            GenderVulnerability_options_str  += '<option value="Moderate">Moderate</option>';
+            GenderVulnerability_options_str  += '<option value="Very High">Very High</option>';
+            GenderVulnerability_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_GenderVulnerability.innerHTML = GenderVulnerability_options_str;
+            div_GenderVulnerability.appendChild(sel_GenderVulnerability);
+            var lab_GenderVulnerability = document.createElement('div');
+            lab_GenderVulnerability.innerHTML = 'Gender Vulnerability';
+            lab_GenderVulnerability.className = 'filterlabel';
+            div_GenderVulnerability.appendChild(lab_GenderVulnerability);
+            var reset_GenderVulnerability = document.createElement('div');
+            reset_GenderVulnerability.innerHTML = 'clear filter';
+            reset_GenderVulnerability.className = 'filterlabel';
+            reset_GenderVulnerability.onclick = function() {
+                var options = document.getElementById("sel_GenderVulnerability").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_GenderVulnerability.appendChild(reset_GenderVulnerability);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_BusinessModel = document.createElement('div');
+            div_BusinessModel.id = "div_BusinessModel";
+            div_BusinessModel.className= "filterselect";
+            document.getElementById("menu").appendChild(div_BusinessModel);
+            sel_BusinessModel = document.createElement('select');
+            sel_BusinessModel.multiple = true;
+            sel_BusinessModel.size = 8;
+            sel_BusinessModel.id = "sel_BusinessModel";
+            var BusinessModel_options_str = "<option value='' unselected></option>";
+            sel_BusinessModel.onchange = function(){filterFunc()};
+            BusinessModel_options_str  += '<option value="NULL">NULL</option>';
+            BusinessModel_options_str  += '<option value="Bundled PPP">Bundled PPP</option>';
+            BusinessModel_options_str  += '<option value="LGI">LGI</option>';
+            BusinessModel_options_str  += '<option value="LGI Operated">LGI Operated</option>';
+            BusinessModel_options_str  += '<option value="Lease Agreement">Lease Agreement</option>';
+            BusinessModel_options_str  += '<option value="Service Contract">Service Contract</option>';
+            BusinessModel_options_str  += '<option value="Un Bundled PPP">Un Bundled PPP</option>';
+            BusinessModel_options_str  += '<option value="Un-Bundled PPP">Un-Bundled PPP</option>';
+            sel_BusinessModel.innerHTML = BusinessModel_options_str;
+            div_BusinessModel.appendChild(sel_BusinessModel);
+            var lab_BusinessModel = document.createElement('div');
+            lab_BusinessModel.innerHTML = 'Business Model';
+            lab_BusinessModel.className = 'filterlabel';
+            div_BusinessModel.appendChild(lab_BusinessModel);
+            var reset_BusinessModel = document.createElement('div');
+            reset_BusinessModel.innerHTML = 'clear filter';
+            reset_BusinessModel.className = 'filterlabel';
+            reset_BusinessModel.onclick = function() {
+                var options = document.getElementById("sel_BusinessModel").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_BusinessModel.appendChild(reset_BusinessModel);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_DeltaPlanHotspot = document.createElement('div');
+            div_DeltaPlanHotspot.id = "div_DeltaPlanHotspot";
+            div_DeltaPlanHotspot.className= "filterselect";
+            document.getElementById("menu").appendChild(div_DeltaPlanHotspot);
+            sel_DeltaPlanHotspot = document.createElement('select');
+            sel_DeltaPlanHotspot.multiple = true;
+            sel_DeltaPlanHotspot.size = 10;
+            sel_DeltaPlanHotspot.id = "sel_DeltaPlanHotspot";
+            var DeltaPlanHotspot_options_str = "<option value='' unselected></option>";
+            sel_DeltaPlanHotspot.onchange = function(){filterFunc()};
+            DeltaPlanHotspot_options_str  += '<option value="Barind & Drought Prone Areas">Barind & Drought Prone Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Barind & Drought Prone Areas, Relatively Less Hazard Prone (RLHP) Areas">Barind & Drought Prone Areas, Relatively Less Hazard Prone (RLHP) Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Barind & Drought Prone Areas, River Systems & Estuaries">Barind & Drought Prone Areas, River Systems & Estuaries</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Barind & Drought Prone Areas, River Systems & Estuaries, Urban Areas">Barind & Drought Prone Areas, River Systems & Estuaries, Urban Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Barind & Drought Prone Areas, Urban Areas">Barind & Drought Prone Areas, Urban Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Chattogram Hill Tracts">Chattogram Hill Tracts</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Coastal Zone">Coastal Zone</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Coastal Zone,  Urban Areas">Coastal Zone,  Urban Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Coastal Zone, River Systems & Estuaries">Coastal Zone, River Systems & Estuaries</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Coastal Zone, River Systems & Estuaries, Urban Areas">Coastal Zone, River Systems & Estuaries, Urban Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Haor & Flash Flood Areas">Haor & Flash Flood Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Haor & Flash Flood Areas, Urban Areas">Haor & Flash Flood Areas, Urban Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Relatively Less Hazard Prone (RLHP) Areas">Relatively Less Hazard Prone (RLHP) Areas</option>';
+            DeltaPlanHotspot_options_str  += '<option value="River Systems & Estuaries">River Systems & Estuaries</option>';
+            DeltaPlanHotspot_options_str  += '<option value="Urban Areas">Urban Areas</option>';
+            sel_DeltaPlanHotspot.innerHTML = DeltaPlanHotspot_options_str;
+            div_DeltaPlanHotspot.appendChild(sel_DeltaPlanHotspot);
+            var lab_DeltaPlanHotspot = document.createElement('div');
+            lab_DeltaPlanHotspot.innerHTML = 'Delta Plan Hotspot';
+            lab_DeltaPlanHotspot.className = 'filterlabel';
+            div_DeltaPlanHotspot.appendChild(lab_DeltaPlanHotspot);
+            var reset_DeltaPlanHotspot = document.createElement('div');
+            reset_DeltaPlanHotspot.innerHTML = 'clear filter';
+            reset_DeltaPlanHotspot.className = 'filterlabel';
+            reset_DeltaPlanHotspot.onclick = function() {
+                var options = document.getElementById("sel_DeltaPlanHotspot").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_DeltaPlanHotspot.appendChild(reset_DeltaPlanHotspot);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_FloodRisk = document.createElement('div');
+            div_FloodRisk.id = "div_FloodRisk";
+            div_FloodRisk.className= "filterselect";
+            document.getElementById("menu").appendChild(div_FloodRisk);
+            sel_FloodRisk = document.createElement('select');
+            sel_FloodRisk.multiple = true;
+            sel_FloodRisk.size = 5;
+            sel_FloodRisk.id = "sel_FloodRisk";
+            var FloodRisk_options_str = "<option value='' unselected></option>";
+            sel_FloodRisk.onchange = function(){filterFunc()};
+            FloodRisk_options_str  += '<option value="High">High</option>';
+            FloodRisk_options_str  += '<option value="Low">Low</option>';
+            FloodRisk_options_str  += '<option value="Moderate">Moderate</option>';
+            FloodRisk_options_str  += '<option value="Very High">Very High</option>';
+            FloodRisk_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_FloodRisk.innerHTML = FloodRisk_options_str;
+            div_FloodRisk.appendChild(sel_FloodRisk);
+            var lab_FloodRisk = document.createElement('div');
+            lab_FloodRisk.innerHTML = 'Flood Risk';
+            lab_FloodRisk.className = 'filterlabel';
+            div_FloodRisk.appendChild(lab_FloodRisk);
+            var reset_FloodRisk = document.createElement('div');
+            reset_FloodRisk.innerHTML = 'clear filter';
+            reset_FloodRisk.className = 'filterlabel';
+            reset_FloodRisk.onclick = function() {
+                var options = document.getElementById("sel_FloodRisk").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_FloodRisk.appendChild(reset_FloodRisk);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_CycloneRisk = document.createElement('div');
+            div_CycloneRisk.id = "div_CycloneRisk";
+            div_CycloneRisk.className= "filterselect";
+            document.getElementById("menu").appendChild(div_CycloneRisk);
+            sel_CycloneRisk = document.createElement('select');
+            sel_CycloneRisk.multiple = true;
+            sel_CycloneRisk.size = 5;
+            sel_CycloneRisk.id = "sel_CycloneRisk";
+            var CycloneRisk_options_str = "<option value='' unselected></option>";
+            sel_CycloneRisk.onchange = function(){filterFunc()};
+            CycloneRisk_options_str  += '<option value="High">High</option>';
+            CycloneRisk_options_str  += '<option value="Low">Low</option>';
+            CycloneRisk_options_str  += '<option value="Moderate">Moderate</option>';
+            CycloneRisk_options_str  += '<option value="Very High">Very High</option>';
+            CycloneRisk_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_CycloneRisk.innerHTML = CycloneRisk_options_str;
+            div_CycloneRisk.appendChild(sel_CycloneRisk);
+            var lab_CycloneRisk = document.createElement('div');
+            lab_CycloneRisk.innerHTML = 'Cyclone Risk';
+            lab_CycloneRisk.className = 'filterlabel';
+            div_CycloneRisk.appendChild(lab_CycloneRisk);
+            var reset_CycloneRisk = document.createElement('div');
+            reset_CycloneRisk.innerHTML = 'clear filter';
+            reset_CycloneRisk.className = 'filterlabel';
+            reset_CycloneRisk.onclick = function() {
+                var options = document.getElementById("sel_CycloneRisk").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_CycloneRisk.appendChild(reset_CycloneRisk);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_SalinityRisk = document.createElement('div');
+            div_SalinityRisk.id = "div_SalinityRisk";
+            div_SalinityRisk.className= "filterselect";
+            document.getElementById("menu").appendChild(div_SalinityRisk);
+            sel_SalinityRisk = document.createElement('select');
+            sel_SalinityRisk.multiple = true;
+            sel_SalinityRisk.size = 5;
+            sel_SalinityRisk.id = "sel_SalinityRisk";
+            var SalinityRisk_options_str = "<option value='' unselected></option>";
+            sel_SalinityRisk.onchange = function(){filterFunc()};
+            SalinityRisk_options_str  += '<option value="High">High</option>';
+            SalinityRisk_options_str  += '<option value="Low">Low</option>';
+            SalinityRisk_options_str  += '<option value="Moderate">Moderate</option>';
+            SalinityRisk_options_str  += '<option value="Very High">Very High</option>';
+            SalinityRisk_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_SalinityRisk.innerHTML = SalinityRisk_options_str;
+            div_SalinityRisk.appendChild(sel_SalinityRisk);
+            var lab_SalinityRisk = document.createElement('div');
+            lab_SalinityRisk.innerHTML = 'Salinity Risk';
+            lab_SalinityRisk.className = 'filterlabel';
+            div_SalinityRisk.appendChild(lab_SalinityRisk);
+            var reset_SalinityRisk = document.createElement('div');
+            reset_SalinityRisk.innerHTML = 'clear filter';
+            reset_SalinityRisk.className = 'filterlabel';
+            reset_SalinityRisk.onclick = function() {
+                var options = document.getElementById("sel_SalinityRisk").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_SalinityRisk.appendChild(reset_SalinityRisk);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_FlashFloodRisk = document.createElement('div');
+            div_FlashFloodRisk.id = "div_FlashFloodRisk";
+            div_FlashFloodRisk.className= "filterselect";
+            document.getElementById("menu").appendChild(div_FlashFloodRisk);
+            sel_FlashFloodRisk = document.createElement('select');
+            sel_FlashFloodRisk.multiple = true;
+            sel_FlashFloodRisk.size = 5;
+            sel_FlashFloodRisk.id = "sel_FlashFloodRisk";
+            var FlashFloodRisk_options_str = "<option value='' unselected></option>";
+            sel_FlashFloodRisk.onchange = function(){filterFunc()};
+            FlashFloodRisk_options_str  += '<option value="High">High</option>';
+            FlashFloodRisk_options_str  += '<option value="Low">Low</option>';
+            FlashFloodRisk_options_str  += '<option value="Moderate">Moderate</option>';
+            FlashFloodRisk_options_str  += '<option value="Very High">Very High</option>';
+            FlashFloodRisk_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_FlashFloodRisk.innerHTML = FlashFloodRisk_options_str;
+            div_FlashFloodRisk.appendChild(sel_FlashFloodRisk);
+            var lab_FlashFloodRisk = document.createElement('div');
+            lab_FlashFloodRisk.innerHTML = 'Flash Flood Risk';
+            lab_FlashFloodRisk.className = 'filterlabel';
+            div_FlashFloodRisk.appendChild(lab_FlashFloodRisk);
+            var reset_FlashFloodRisk = document.createElement('div');
+            reset_FlashFloodRisk.innerHTML = 'clear filter';
+            reset_FlashFloodRisk.className = 'filterlabel';
+            reset_FlashFloodRisk.onclick = function() {
+                var options = document.getElementById("sel_FlashFloodRisk").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_FlashFloodRisk.appendChild(reset_FlashFloodRisk);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ErosionRisk = document.createElement('div');
+            div_ErosionRisk.id = "div_ErosionRisk";
+            div_ErosionRisk.className= "filterselect";
+            document.getElementById("menu").appendChild(div_ErosionRisk);
+            sel_ErosionRisk = document.createElement('select');
+            sel_ErosionRisk.multiple = true;
+            sel_ErosionRisk.size = 5;
+            sel_ErosionRisk.id = "sel_ErosionRisk";
+            var ErosionRisk_options_str = "<option value='' unselected></option>";
+            sel_ErosionRisk.onchange = function(){filterFunc()};
+            ErosionRisk_options_str  += '<option value="High">High</option>';
+            ErosionRisk_options_str  += '<option value="Low">Low</option>';
+            ErosionRisk_options_str  += '<option value="Moderate">Moderate</option>';
+            ErosionRisk_options_str  += '<option value="Very High">Very High</option>';
+            ErosionRisk_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_ErosionRisk.innerHTML = ErosionRisk_options_str;
+            div_ErosionRisk.appendChild(sel_ErosionRisk);
+            var lab_ErosionRisk = document.createElement('div');
+            lab_ErosionRisk.innerHTML = 'Erosion Risk';
+            lab_ErosionRisk.className = 'filterlabel';
+            div_ErosionRisk.appendChild(lab_ErosionRisk);
+            var reset_ErosionRisk = document.createElement('div');
+            reset_ErosionRisk.innerHTML = 'clear filter';
+            reset_ErosionRisk.className = 'filterlabel';
+            reset_ErosionRisk.onclick = function() {
+                var options = document.getElementById("sel_ErosionRisk").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_ErosionRisk.appendChild(reset_ErosionRisk);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_LandslideRisk = document.createElement('div');
+            div_LandslideRisk.id = "div_LandslideRisk";
+            div_LandslideRisk.className= "filterselect";
+            document.getElementById("menu").appendChild(div_LandslideRisk);
+            sel_LandslideRisk = document.createElement('select');
+            sel_LandslideRisk.multiple = true;
+            sel_LandslideRisk.size = 5;
+            sel_LandslideRisk.id = "sel_LandslideRisk";
+            var LandslideRisk_options_str = "<option value='' unselected></option>";
+            sel_LandslideRisk.onchange = function(){filterFunc()};
+            LandslideRisk_options_str  += '<option value="High">High</option>';
+            LandslideRisk_options_str  += '<option value="Low">Low</option>';
+            LandslideRisk_options_str  += '<option value="Moderate">Moderate</option>';
+            LandslideRisk_options_str  += '<option value="Very High">Very High</option>';
+            LandslideRisk_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_LandslideRisk.innerHTML = LandslideRisk_options_str;
+            div_LandslideRisk.appendChild(sel_LandslideRisk);
+            var lab_LandslideRisk = document.createElement('div');
+            lab_LandslideRisk.innerHTML = 'Landslide Risk';
+            lab_LandslideRisk.className = 'filterlabel';
+            div_LandslideRisk.appendChild(lab_LandslideRisk);
+            var reset_LandslideRisk = document.createElement('div');
+            reset_LandslideRisk.innerHTML = 'clear filter';
+            reset_LandslideRisk.className = 'filterlabel';
+            reset_LandslideRisk.onclick = function() {
+                var options = document.getElementById("sel_LandslideRisk").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_LandslideRisk.appendChild(reset_LandslideRisk);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_EarthquakeRisk = document.createElement('div');
+            div_EarthquakeRisk.id = "div_EarthquakeRisk";
+            div_EarthquakeRisk.className= "filterselect";
+            document.getElementById("menu").appendChild(div_EarthquakeRisk);
+            sel_EarthquakeRisk = document.createElement('select');
+            sel_EarthquakeRisk.multiple = true;
+            sel_EarthquakeRisk.size = 5;
+            sel_EarthquakeRisk.id = "sel_EarthquakeRisk";
+            var EarthquakeRisk_options_str = "<option value='' unselected></option>";
+            sel_EarthquakeRisk.onchange = function(){filterFunc()};
+            EarthquakeRisk_options_str  += '<option value="High">High</option>';
+            EarthquakeRisk_options_str  += '<option value="Low">Low</option>';
+            EarthquakeRisk_options_str  += '<option value="Moderate">Moderate</option>';
+            EarthquakeRisk_options_str  += '<option value="Very High">Very High</option>';
+            EarthquakeRisk_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_EarthquakeRisk.innerHTML = EarthquakeRisk_options_str;
+            div_EarthquakeRisk.appendChild(sel_EarthquakeRisk);
+            var lab_EarthquakeRisk = document.createElement('div');
+            lab_EarthquakeRisk.innerHTML = 'Earthquake Risk';
+            lab_EarthquakeRisk.className = 'filterlabel';
+            div_EarthquakeRisk.appendChild(lab_EarthquakeRisk);
+            var reset_EarthquakeRisk = document.createElement('div');
+            reset_EarthquakeRisk.innerHTML = 'clear filter';
+            reset_EarthquakeRisk.className = 'filterlabel';
+            reset_EarthquakeRisk.onclick = function() {
+                var options = document.getElementById("sel_EarthquakeRisk").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_EarthquakeRisk.appendChild(reset_EarthquakeRisk);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_SeaLevelRiseRisk = document.createElement('div');
+            div_SeaLevelRiseRisk.id = "div_SeaLevelRiseRisk";
+            div_SeaLevelRiseRisk.className= "filterselect";
+            document.getElementById("menu").appendChild(div_SeaLevelRiseRisk);
+            sel_SeaLevelRiseRisk = document.createElement('select');
+            sel_SeaLevelRiseRisk.multiple = true;
+            sel_SeaLevelRiseRisk.size = 5;
+            sel_SeaLevelRiseRisk.id = "sel_SeaLevelRiseRisk";
+            var SeaLevelRiseRisk_options_str = "<option value='' unselected></option>";
+            sel_SeaLevelRiseRisk.onchange = function(){filterFunc()};
+            SeaLevelRiseRisk_options_str  += '<option value="High">High</option>';
+            SeaLevelRiseRisk_options_str  += '<option value="Low">Low</option>';
+            SeaLevelRiseRisk_options_str  += '<option value="Moderate">Moderate</option>';
+            SeaLevelRiseRisk_options_str  += '<option value="Very High">Very High</option>';
+            SeaLevelRiseRisk_options_str  += '<option value="Very Low">Very Low</option>';
+            sel_SeaLevelRiseRisk.innerHTML = SeaLevelRiseRisk_options_str;
+            div_SeaLevelRiseRisk.appendChild(sel_SeaLevelRiseRisk);
+            var lab_SeaLevelRiseRisk = document.createElement('div');
+            lab_SeaLevelRiseRisk.innerHTML = 'Sea Level Rise Risk';
+            lab_SeaLevelRiseRisk.className = 'filterlabel';
+            div_SeaLevelRiseRisk.appendChild(lab_SeaLevelRiseRisk);
+            var reset_SeaLevelRiseRisk = document.createElement('div');
+            reset_SeaLevelRiseRisk.innerHTML = 'clear filter';
+            reset_SeaLevelRiseRisk.className = 'filterlabel';
+            reset_SeaLevelRiseRisk.onclick = function() {
+                var options = document.getElementById("sel_SeaLevelRiseRisk").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_SeaLevelRiseRisk.appendChild(reset_SeaLevelRiseRisk);
+        </script>
+    </body>
+</html>
